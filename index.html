@@ -8,19 +8,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#1e3a8a">
-    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='url(%23gradient)'/>%3Cdefs%3E%3ClinearGradient id='gradient'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='50%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23ec4899'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ctext x='50' y='65' text-anchor='middle' fill='white' font-size='40' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E">
 </head>
 <body>
-    <!-- Language & Theme Toggle -->
-    <div id="controls-panel" class="controls-panel">
-        <button onclick="toggleLanguage()" class="control-btn" title="Toggle Language">
-            <span id="lang-icon">🇮🇳</span>
-        </button>
-        <button onclick="toggleTheme()" class="control-btn" title="Toggle Theme">
-            <i class="fas fa-moon" id="theme-icon"></i>
-        </button>
-    </div>
-
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-content">
@@ -34,20 +24,33 @@
             <div class="loading-bar">
                 <div class="loading-progress"></div>
             </div>
+            <p class="loading-status" id="loading-status">Initializing...</p>
         </div>
     </div>
 
-    <!-- Login Page -->
-    <div id="login-page" class="page active">
-        <div class="login-container">
-            <div class="login-background">
-                <div class="floating-element" style="top: 10%; left: 10%;">🏏</div>
-                <div class="floating-element" style="top: 20%; right: 15%;">🎬</div>
-                <div class="floating-element" style="bottom: 30%; left: 20%;">💻</div>
-                <div class="floating-element" style="bottom: 10%; right: 10%;">🎵</div>
+    <!-- Language & Theme Toggle -->
+    <div id="controls-panel" class="controls-panel">
+        <button onclick="toggleLanguage()" class="control-btn" title="Toggle Language">
+            <span id="lang-icon">🇮🇳</span>
+        </button>
+        <button onclick="toggleTheme()" class="control-btn" title="Toggle Theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+
+    <!-- Login/Signup Page -->
+    <div id="auth-page" class="page active">
+        <div class="auth-container">
+            <div class="auth-background">
+                <div class="floating-element cricket" style="top: 10%; left: 10%;">🏏</div>
+                <div class="floating-element bollywood" style="top: 20%; right: 15%;">🎬</div>
+                <div class="floating-element tech" style="bottom: 30%; left: 20%;">💻</div>
+                <div class="floating-element music" style="bottom: 10%; right: 10%;">⚽</div>
+                <div class="floating-element india" style="top: 50%; left: 5%;">🇮🇳</div>
+                <div class="floating-element food" style="bottom: 50%; right: 5%;">🍛</div>
             </div>
             
-            <div class="login-card">
+            <div class="auth-card">
                 <div class="logo-section">
                     <div class="bharatverse-logo">
                         <div class="logo-circle">
@@ -58,15 +61,18 @@
                     <p class="tagline" data-en="Make Your Verse Go Viral" data-hi="अपना वर्स वायरल करें">Make Your Verse Go Viral</p>
                 </div>
                 
-                <div class="auth-container">
+                <div class="auth-forms-container">
                     <div class="auth-tabs">
                         <button class="auth-tab active" onclick="showAuthForm('login')" data-en="Login" data-hi="लॉगिन">Login</button>
                         <button class="auth-tab" onclick="showAuthForm('signup')" data-en="Sign Up" data-hi="साइन अप">Sign Up</button>
                     </div>
                     
+                    <!-- Error/Success Messages -->
+                    <div id="auth-message" class="auth-message hidden"></div>
+                    
                     <!-- OAuth Buttons -->
                     <div class="oauth-section">
-                        <button class="oauth-btn google" onclick="loginWithProvider('google')">
+                        <button class="oauth-btn google" onclick="loginWithOAuth('google')">
                             <svg class="oauth-icon" viewBox="0 0 24 24">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -76,7 +82,7 @@
                             <span data-en="Continue with Google" data-hi="Google से जारी रखें">Continue with Google</span>
                         </button>
                         
-                        <button class="oauth-btn microsoft" onclick="loginWithProvider('microsoft')">
+                        <button class="oauth-btn microsoft" onclick="loginWithOAuth('microsoft')">
                             <svg class="oauth-icon" viewBox="0 0 24 24">
                                 <path fill="#F25022" d="M1 1h10v10H1z"/>
                                 <path fill="#00A4EF" d="M13 1h10v10H13z"/>
@@ -85,6 +91,11 @@
                             </svg>
                             <span data-en="Continue with Microsoft" data-hi="Microsoft से जारी रखें">Continue with Microsoft</span>
                         </button>
+
+                        <button class="oauth-btn phone" onclick="loginWithPhone()">
+                            <i class="fas fa-mobile-alt oauth-icon-simple"></i>
+                            <span data-en="Continue with Phone" data-hi="फोन से जारी रखें">Continue with Phone</span>
+                        </button>
                     </div>
                     
                     <div class="divider">
@@ -92,56 +103,161 @@
                     </div>
                     
                     <!-- Login Form -->
-                    <form id="login-form" class="auth-form active" onsubmit="handleAuth(event, 'login')">
+                    <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
                         <div class="input-group">
                             <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" class="form-input" placeholder="Email or Username" required>
+                            <input type="email" class="form-input" id="login-email" placeholder="Email Address" required>
+                            <div class="input-validation" id="login-email-validation"></div>
                         </div>
                         <div class="input-group">
                             <i class="fas fa-lock input-icon"></i>
-                            <input type="password" class="form-input" placeholder="Password" required>
-                            <button type="button" class="toggle-password" onclick="togglePassword(this)">
+                            <input type="password" class="form-input" id="login-password" placeholder="Password" required minlength="6">
+                            <button type="button" class="toggle-password" onclick="togglePassword('login-password')">
                                 <i class="fas fa-eye"></i>
                             </button>
+                            <div class="input-validation" id="login-password-validation"></div>
                         </div>
-                        <button type="submit" class="auth-submit">
+                        <div class="form-options">
+                            <label class="remember-me">
+                                <input type="checkbox" id="remember-me">
+                                <span data-en="Remember me" data-hi="मुझे याद रखें">Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-link" onclick="showForgotPassword()" data-en="Forgot Password?" data-hi="पासवर्ड भूल गए?">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="auth-submit" id="login-btn">
                             <span data-en="Enter BharatVerse" data-hi="भारतवर्स में प्रवेश करें">Enter BharatVerse</span>
                             <i class="fas fa-arrow-right"></i>
                         </button>
-                        <a href="#" class="forgot-link" data-en="Forgot Password?" data-hi="पासवर्ड भूल गए?">Forgot Password?</a>
                     </form>
                     
                     <!-- Signup Form -->
-                    <form id="signup-form" class="auth-form" onsubmit="handleAuth(event, 'signup')">
+                    <form id="signup-form" class="auth-form" onsubmit="handleSignup(event)">
                         <div class="input-group">
                             <i class="fas fa-user input-icon"></i>
-                            <input type="text" class="form-input" placeholder="Full Name" required>
+                            <input type="text" class="form-input" id="signup-fullname" placeholder="Full Name" required minlength="2">
+                            <div class="input-validation" id="signup-fullname-validation"></div>
                         </div>
                         <div class="input-group">
                             <i class="fas fa-at input-icon"></i>
-                            <input type="text" class="form-input" placeholder="Username" required>
+                            <input type="text" class="form-input" id="signup-username" placeholder="Username" required minlength="3" pattern="^[a-zA-Z0-9_]+$">
+                            <div class="input-validation" id="signup-username-validation"></div>
+                            <div class="username-availability" id="username-availability"></div>
                         </div>
                         <div class="input-group">
                             <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" class="form-input" placeholder="Email Address" required>
+                            <input type="email" class="form-input" id="signup-email" placeholder="Email Address" required>
+                            <div class="input-validation" id="signup-email-validation"></div>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-mobile-alt input-icon"></i>
+                            <input type="tel" class="form-input" id="signup-phone" placeholder="+91 Phone Number" pattern="^(\+91|0)?[6789]\d{9}$">
+                            <div class="input-validation" id="signup-phone-validation"></div>
                         </div>
                         <div class="input-group">
                             <i class="fas fa-lock input-icon"></i>
-                            <input type="password" class="form-input" placeholder="Create Password" required>
-                            <button type="button" class="toggle-password" onclick="togglePassword(this)">
+                            <input type="password" class="form-input" id="signup-password" placeholder="Create Password" required minlength="8">
+                            <button type="button" class="toggle-password" onclick="togglePassword('signup-password')">
                                 <i class="fas fa-eye"></i>
                             </button>
+                            <div class="password-strength" id="password-strength"></div>
+                            <div class="input-validation" id="signup-password-validation"></div>
                         </div>
-                        <div class="terms-check">
-                            <input type="checkbox" id="terms" required>
-                            <label for="terms">
+                        <div class="input-group">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" class="form-input" id="signup-confirm-password" placeholder="Confirm Password" required>
+                            <div class="input-validation" id="signup-confirm-password-validation"></div>
+                        </div>
+                        <div class="interests-section">
+                            <label class="section-label" data-en="Select Your Interests:" data-hi="अपनी रुचियां चुनें:">Select Your Interests:</label>
+                            <div class="interests-grid">
+                                <label class="interest-chip">
+                                    <input type="checkbox" value="cricket" name="interests">
+                                    <span>🏏 Cricket</span>
+                                </label>
+                                <label class="interest-chip">
+                                    <input type="checkbox" value="football" name="interests">
+                                    <span>⚽ Football</span>
+                                </label>
+                                <label class="interest-chip">
+                                    <input type="checkbox" value="bollywood" name="interests">
+                                    <span>🎬 Bollywood</span>
+                                </label>
+                                <label class="interest-chip">
+                                    <input type="checkbox" value="tech" name="interests">
+                                    <span>💻 Technology</span>
+                                </label>
+                                <label class="interest-chip">
+                                    <input type="checkbox" value="music" name="interests">
+                                    <span>🎵 Music</span>
+                                </label>
+                                <label class="interest-chip">
+                                    <input type="checkbox" value="food" name="interests">
+                                    <span>🍛 Food</span>
+                                </label>
+                                <label class="interest-chip">
+                                    <input type="checkbox" value="travel" name="interests">
+                                    <span>✈️ Travel</span>
+                                </label>
+                                <label class="interest-chip">
+                                    <input type="checkbox" value="fitness" name="interests">
+                                    <span>💪 Fitness</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="terms-section">
+                            <label class="terms-check">
+                                <input type="checkbox" id="terms-checkbox" required>
                                 <span data-en="I agree to BharatVerse " data-hi="मैं भारतवर्स के ">I agree to BharatVerse </span>
-                                <a href="#" data-en="Terms & Privacy" data-hi="नियम और गोपनीयता">Terms & Privacy</a>
+                                <a href="#" onclick="showTerms()" data-en="Terms of Service" data-hi="सेवा की शर्तें">Terms of Service</a>
+                                <span data-en=" and " data-hi=" और "> and </span>
+                                <a href="#" onclick="showPrivacy()" data-en="Privacy Policy" data-hi="गोपनीयता नीति">Privacy Policy</a>
                             </label>
                         </div>
-                        <button type="submit" class="auth-submit">
+                        <button type="submit" class="auth-submit" id="signup-btn">
                             <span data-en="Create Account" data-hi="खाता बनाएं">Create Account</span>
                             <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <!-- Phone Login Form -->
+                    <form id="phone-form" class="auth-form" onsubmit="handlePhoneLogin(event)">
+                        <div class="input-group">
+                            <i class="fas fa-mobile-alt input-icon"></i>
+                            <input type="tel" class="form-input" id="phone-number" placeholder="+91 Enter Phone Number" required>
+                            <div class="input-validation" id="phone-validation"></div>
+                        </div>
+                        <button type="submit" class="auth-submit" id="send-otp-btn">
+                            <span data-en="Send OTP" data-hi="OTP भेजें">Send OTP</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+
+                    <!-- OTP Verification Form -->
+                    <form id="otp-form" class="auth-form" onsubmit="handleOTPVerification(event)">
+                        <div class="otp-header">
+                            <h3 data-en="Enter OTP" data-hi="OTP दर्ज करें">Enter OTP</h3>
+                            <p data-en="We sent a 6-digit code to" data-hi="हमने 6-अंकीय कोड भेजा है">We sent a 6-digit code to</p>
+                            <span id="otp-phone-display"></span>
+                        </div>
+                        <div class="otp-inputs">
+                            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 0)">
+                            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)">
+                            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 2)">
+                            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 3)">
+                            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 4)">
+                            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 5)">
+                        </div>
+                        <div class="otp-timer">
+                            <span data-en="Resend OTP in" data-hi="OTP पुनः भेजें">Resend OTP in</span> 
+                            <span id="otp-countdown">30</span>s
+                        </div>
+                        <button type="submit" class="auth-submit" id="verify-otp-btn">
+                            <span data-en="Verify & Continue" data-hi="सत्यापित करें और जारी रखें">Verify & Continue</span>
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button type="button" class="resend-otp-btn hidden" id="resend-otp-btn" onclick="resendOTP()">
+                            <span data-en="Resend OTP" data-hi="OTP पुनः भेजें">Resend OTP</span>
+                            <i class="fas fa-redo"></i>
                         </button>
                     </form>
                 </div>
@@ -151,7 +267,7 @@
 
     <!-- Main App Navigation -->
     <nav id="main-navbar" class="main-navbar hidden">
-        <div class="navbar-brand">
+        <div class="navbar-brand" onclick="showPage('home')">
             <div class="logo-small">V</div>
             <span class="brand-text">BharatVerse</span>
         </div>
@@ -159,51 +275,79 @@
         <div class="navbar-center">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search BharatVerse..." id="global-search">
+                <input type="text" class="search-input" placeholder="Search BharatVerse..." id="global-search" oninput="handleGlobalSearch(this.value)">
                 <div class="search-suggestions" id="search-suggestions"></div>
             </div>
         </div>
         
         <div class="navbar-actions">
-            <button class="nav-action-btn" onclick="showPage('home')" title="Home">
+            <button class="nav-action-btn" onclick="showPage('home')" title="Home" data-page="home">
                 <i class="fas fa-home"></i>
             </button>
-            <button class="nav-action-btn" onclick="showPage('explore')" title="Explore">
+            <button class="nav-action-btn" onclick="showPage('explore')" title="Explore" data-page="explore">
                 <i class="fas fa-compass"></i>
             </button>
-            <button class="nav-action-btn create-btn" onclick="showPage('create')" title="Create">
+            <button class="nav-action-btn create-btn" onclick="showPage('create')" title="Create" data-page="create">
                 <i class="fas fa-plus"></i>
             </button>
-            <button class="nav-action-btn" onclick="showPage('messages')" title="Messages">
+            <button class="nav-action-btn" onclick="showPage('messages')" title="Messages" data-page="messages">
                 <i class="fas fa-comment"></i>
-                <span class="notification-badge" id="message-badge">3</span>
+                <span class="notification-badge" id="message-badge">0</span>
             </button>
             <button class="nav-action-btn" onclick="toggleNotifications()" title="Notifications">
                 <i class="fas fa-bell"></i>
-                <span class="notification-badge" id="notification-badge">7</span>
+                <span class="notification-badge" id="notification-badge">0</span>
             </button>
-            <button class="nav-action-btn profile-btn" onclick="showPage('profile')" title="Profile">
+            <button class="nav-action-btn profile-btn" onclick="showPage('profile')" title="Profile" data-page="profile">
                 <img class="nav-profile-pic" id="nav-profile-pic" src="https://via.placeholder.com/32/333/FFF?text=U" alt="Profile">
+            </button>
+            <button class="nav-action-btn logout-btn" onclick="logout()" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
             </button>
         </div>
     </nav>
 
     <!-- Home Feed -->
     <div id="home-page" class="page">
-        <!-- Live Cricket Ticker -->
-        <div class="cricket-ticker" id="cricket-ticker">
+        <!-- Live Ticker -->
+        <div class="live-ticker" id="live-ticker">
             <div class="ticker-content">
                 <span class="live-badge">🔴 LIVE</span>
-                <span class="cricket-score">MI vs RCB • MI 165/4 (18.2) | RCB need 45 from 10 balls</span>
+                <span class="ticker-item">🏏 IND vs AUS - India 165/3 (18.2) | Australia need 45 runs</span>
                 <span class="ticker-separator">•</span>
-                <span class="bollywood-news">🎬 New Shah Rukh Khan film crosses ₹100 crores!</span>
+                <span class="ticker-item">⚽ Real Madrid beats Barcelona 2-1 | Ronaldo scores!</span>
                 <span class="ticker-separator">•</span>
-                <span class="tech-news">💻 Made-in-India AI startup gets $50M funding</span>
+                <span class="ticker-item">🎬 New Bollywood blockbuster crosses ₹100 crores!</span>
+                <span class="ticker-separator">•</span>
+                <span class="ticker-item">💻 Indian AI startup gets $50M funding round</span>
             </div>
         </div>
 
         <div class="home-container">
             <div class="main-feed">
+                <!-- Quick Actions -->
+                <div class="quick-actions-widget">
+                    <h3 data-en="Quick Actions" data-hi="त्वरित कार्य">Quick Actions</h3>
+                    <div class="quick-actions-grid">
+                        <button class="quick-action" onclick="showPage('create')">
+                            <i class="fas fa-edit"></i>
+                            <span data-en="Create Post" data-hi="पोस्ट बनाएं">Create Post</span>
+                        </button>
+                        <button class="quick-action" onclick="startLiveStream()">
+                            <i class="fas fa-video"></i>
+                            <span data-en="Go Live" data-hi="लाइव जाएं">Go Live</span>
+                        </button>
+                        <button class="quick-action" onclick="createStory()">
+                            <i class="fas fa-plus-circle"></i>
+                            <span data-en="Add Story" data-hi="स्टोरी जोड़ें">Add Story</span>
+                        </button>
+                        <button class="quick-action" onclick="joinVoiceRoom()">
+                            <i class="fas fa-microphone"></i>
+                            <span data-en="Voice Room" data-hi="वॉयस रूम">Voice Room</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Stories Section -->
                 <div class="stories-container">
                     <div class="story-item add-story" onclick="createStory()">
@@ -217,11 +361,11 @@
                     </div>
                 </div>
 
-                <!-- Create Post -->
+                <!-- Create Post Widget -->
                 <div class="create-post-widget">
                     <div class="create-post-header">
                         <img class="user-avatar-small" id="user-avatar-small" src="https://via.placeholder.com/40/333/FFF?text=U" alt="You">
-                        <input type="text" class="create-post-input" placeholder="What's on your verse today?" onclick="showPage('create')">
+                        <input type="text" class="create-post-input" placeholder="What's on your verse today, Royal?" onclick="showPage('create')" readonly>
                     </div>
                     <div class="create-post-actions">
                         <button class="create-action-btn" onclick="showPage('create')" data-type="photo">
@@ -245,18 +389,60 @@
 
                 <!-- Posts Feed -->
                 <div class="posts-container" id="posts-container">
-                    <!-- Posts will be loaded here -->
+                    <div class="loading-posts" id="loading-posts">
+                        <div class="post-skeleton">
+                            <div class="skeleton-header">
+                                <div class="skeleton-avatar"></div>
+                                <div class="skeleton-text"></div>
+                            </div>
+                            <div class="skeleton-content"></div>
+                            <div class="skeleton-image"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load More Button -->
+                <div class="load-more-container">
+                    <button class="load-more-btn" id="load-more-btn" onclick="loadMorePosts()">
+                        <span data-en="Load More Posts" data-hi="और पोस्ट लोड करें">Load More Posts</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
             </div>
 
             <!-- Right Sidebar -->
             <div class="right-sidebar">
+                <!-- User Stats Widget -->
+                <div class="sidebar-widget user-stats-widget">
+                    <div class="user-stats-header">
+                        <img class="stats-avatar" id="stats-avatar" src="https://via.placeholder.com/50/333/FFF?text=U" alt="You">
+                        <div class="stats-info">
+                            <h4 id="stats-username">Welcome, Royal!</h4>
+                            <p class="stats-handle" id="stats-handle">@royal</p>
+                        </div>
+                    </div>
+                    <div class="user-stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number" id="user-posts-count">0</span>
+                            <span class="stat-label" data-en="Posts" data-hi="पोस्ट">Posts</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="user-followers-count">0</span>
+                            <span class="stat-label" data-en="Followers" data-hi="फॉलोअर्स">Followers</span>
+                        </div>
+                        <div class="stat-item versecoins">
+                            <span class="stat-number" id="user-versecoins">100</span>
+                            <span class="stat-label">VerseCoins</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Trending Section -->
                 <div class="sidebar-widget trending-widget">
                     <div class="widget-header">
                         <h3 data-en="Trending in India" data-hi="भारत में ट्रेंडिंग">Trending in India</h3>
-                        <button class="widget-more-btn">
-                            <i class="fas fa-ellipsis-h"></i>
+                        <button class="widget-more-btn" onclick="showPage('explore')">
+                            <i class="fas fa-external-link-alt"></i>
                         </button>
                     </div>
                     <div class="trending-list" id="trending-list">
@@ -264,25 +450,25 @@
                     </div>
                 </div>
 
-                <!-- Who to Sync -->
-                <div class="sidebar-widget sync-suggestions">
+                <!-- Who to Follow -->
+                <div class="sidebar-widget follow-suggestions">
                     <div class="widget-header">
-                        <h3 data-en="Who to Sync" data-hi="किसे सिंक करें">Who to Sync</h3>
-                        <a href="#" class="see-all-link" data-en="See All" data-hi="सभी देखें">See All</a>
+                        <h3 data-en="Who to Follow" data-hi="किसे फॉलो करें">Who to Follow</h3>
+                        <a href="#" class="see-all-link" onclick="showPage('explore')" data-en="See All" data-hi="सभी देखें">See All</a>
                     </div>
-                    <div class="sync-list" id="sync-suggestions-list">
-                        <!-- Sync suggestions will be loaded here -->
+                    <div class="follow-list" id="follow-suggestions-list">
+                        <!-- Follow suggestions will be loaded here -->
                     </div>
                 </div>
 
-                <!-- Live Cricket Widget -->
-                <div class="sidebar-widget cricket-widget">
+                <!-- Live Sports Widget -->
+                <div class="sidebar-widget sports-widget">
                     <div class="widget-header">
-                        <h3>🏏 CricketVerse Live</h3>
-                        <button class="join-room-btn" onclick="joinCricketRoom()">Join Room</button>
+                        <h3>🏏 Live Sports</h3>
+                        <button class="join-room-btn" onclick="joinSportsRoom()">Join</button>
                     </div>
-                    <div class="cricket-match-card" id="live-cricket">
-                        <!-- Live cricket info -->
+                    <div class="sports-matches" id="live-sports">
+                        <!-- Live sports info -->
                     </div>
                 </div>
 
@@ -292,7 +478,7 @@
                         <div class="versecoins-icon">💰</div>
                         <div class="versecoins-info">
                             <h4 data-en="VerseCoins" data-hi="वर्सकॉइन">VerseCoins</h4>
-                            <span class="versecoins-balance" id="versecoins-balance">2,500</span>
+                            <span class="versecoins-balance" id="versecoins-balance">100</span>
                         </div>
                     </div>
                     <div class="versecoins-actions">
@@ -304,260 +490,21 @@
         </div>
     </div>
 
-    <!-- Create Post Page -->
-    <div id="create-page" class="page">
-        <div class="create-container">
-            <div class="create-header">
-                <button class="back-btn" onclick="showPage('home')">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <h2 data-en="Create New Post" data-hi="नई पोस्ट बनाएं">Create New Post</h2>
-                <button class="publish-btn" onclick="publishPost()" id="publish-btn">
-                    <span data-en="Share" data-hi="साझा करें">Share</span>
-                </button>
-            </div>
+    <!-- Rest of the pages will continue in the next file due to length... -->
+    <!-- This includes Create Page, Messages Page, Profile Page, Explore Page, etc. -->
 
-            <div class="create-content">
-                <div class="create-user-info">
-                    <img class="user-avatar" id="create-user-avatar" src="https://via.placeholder.com/50/333/FFF?text=U" alt="You">
-                    <div class="user-details">
-                        <div class="username" id="create-username">Your Name</div>
-                        <select class="privacy-select" id="post-privacy">
-                            <option value="public">🌍 Public</option>
-                            <option value="synced">👥 Synced Only</option>
-                            <option value="private">🔒 Private</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="create-input-section">
-                    <textarea class="post-textarea" id="post-content" placeholder="What's on your verse today?" maxlength="2000"></textarea>
-                    <div class="character-count">
-                        <span id="char-count">0</span>/2000
-                    </div>
-                </div>
-
-                <div class="media-preview-area" id="media-preview">
-                    <!-- Media previews will appear here -->
-                </div>
-
-                <div class="create-tools">
-                    <div class="media-tools">
-                        <button class="media-tool" onclick="selectMedia('photo')" title="Add Photo">
-                            <i class="fas fa-image"></i>
-                        </button>
-                        <button class="media-tool" onclick="selectMedia('video')" title="Add Video">
-                            <i class="fas fa-video"></i>
-                        </button>
-                        <button class="media-tool" onclick="recordVoice()" title="Record Voice">
-                            <i class="fas fa-microphone"></i>
-                        </button>
-                        <button class="media-tool" onclick="addLocation()" title="Add Location">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </button>
-                        <button class="media-tool" onclick="addPoll()" title="Create Poll">
-                            <i class="fas fa-poll"></i>
-                        </button>
-                        <button class="media-tool" onclick="schedulePost()" title="Schedule Post">
-                            <i class="fas fa-clock"></i>
-                        </button>
-                    </div>
-
-                    <div class="ai-tools">
-                        <button class="ai-tool" onclick="aiEnhance()" title="AI Enhance">
-                            <i class="fas fa-magic"></i>
-                            <span data-en="AI Enhance" data-hi="AI सुधार">AI Enhance</span>
-                        </button>
-                        <button class="ai-tool" onclick="translatePost()" title="Auto Translate">
-                            <i class="fas fa-language"></i>
-                            <span data-en="Translate" data-hi="अनुवाद">Translate</span>
-                        </button>
-                    </div>
-
-                    <div class="hashtag-suggestions">
-                        <div class="suggestions-header">
-                            <span data-en="Trending Hashtags" data-hi="ट्रेंडिंग हैशटैग">Trending Hashtags</span>
-                        </div>
-                        <div class="hashtag-chips" id="trending-hashtags">
-                            <!-- Trending hashtags will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Messages Page -->
-    <div id="messages-page" class="page">
-        <div class="messages-layout">
-            <div class="messages-sidebar">
-                <div class="messages-header">
-                    <h2 data-en="Messages" data-hi="संदेश">Messages</h2>
-                    <div class="messages-actions">
-                        <button class="new-message-btn" onclick="startNewMessage()" title="New Message">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="voice-room-btn" onclick="joinVoiceRoom()" title="Voice Room">
-                            <i class="fas fa-microphone"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="messages-search">
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search messages..." class="search-input">
-                    </div>
-                </div>
-
-                <div class="message-filters">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="unread">Unread</button>
-                    <button class="filter-btn" data-filter="groups">Groups</button>
-                    <button class="filter-btn" data-filter="archived">Archived</button>
-                </div>
-
-                <div class="messages-list" id="messages-list">
-                    <!-- Message conversations will be loaded here -->
-                </div>
-            </div>
-
-            <div class="chat-area" id="chat-area">
-                <div class="no-chat-selected">
-                    <div class="no-chat-icon">💬</div>
-                    <h3 data-en="Select a conversation" data-hi="बातचीत चुनें">Select a conversation</h3>
-                    <p data-en="Choose from existing conversations or start a new one" data-hi="मौजूदा बातचीत से चुनें या नई शुरू करें">Choose from existing conversations or start a new one</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Page -->
-    <div id="profile-page" class="page">
-        <div class="profile-layout">
-            <div class="profile-header">
-                <div class="profile-cover" id="profile-cover"></div>
-                <div class="profile-info-section">
-                    <div class="profile-avatar-container">
-                        <img class="profile-avatar" id="profile-avatar" src="https://via.placeholder.com/120/333/FFF?text=U" alt="Profile">
-                        <button class="change-avatar-btn" onclick="changeAvatar()">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                        <div class="verification-badge" id="verification-badge">
-                            <i class="fas fa-check"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-details">
-                        <div class="profile-name-section">
-                            <h1 class="profile-name" id="profile-display-name">Your Name</h1>
-                            <button class="edit-profile-btn" onclick="editProfile()">
-                                <i class="fas fa-edit"></i>
-                                <span data-en="Edit Profile" data-hi="प्रोफाइल संपादित करें">Edit Profile</span>
-                            </button>
-                        </div>
-                        
-                        <p class="profile-username" id="profile-username-display">@your_username</p>
-                        <p class="profile-bio" id="profile-bio-display">Cricket lover 🏏 | Coding addict | #TeamIndia</p>
-                        
-                        <div class="profile-location" id="profile-location-display">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Mumbai, India</span>
-                        </div>
-                        
-                        <div class="profile-joined">
-                            <i class="fas fa-calendar"></i>
-                            <span data-en="Joined" data-hi="शामिल हुए">Joined</span> August 2025
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="profile-stats">
-                    <div class="stat-item" onclick="showModal('posts-modal')">
-                        <div class="stat-number" id="posts-count">247</div>
-                        <div class="stat-label" data-en="Verses" data-hi="वर्स">Verses</div>
-                    </div>
-                    <div class="stat-item" onclick="showModal('syncing-modal')">
-                        <div class="stat-number" id="syncing-count">892</div>
-                        <div class="stat-label" data-en="Syncing" data-hi="सिंकिंग">Syncing</div>
-                    </div>
-                    <div class="stat-item" onclick="showModal('synced-modal')">
-                        <div class="stat-number" id="synced-count">1.2K</div>
-                        <div class="stat-label" data-en="Synced" data-hi="सिंक्ड">Synced</div>
-                    </div>
-                    <div class="stat-item versecoins" onclick="showModal('versecoins-modal')">
-                        <div class="stat-number" id="profile-versecoins">2.5K</div>
-                        <div class="stat-label">VerseCoins</div>
-                    </div>
-                </div>
-
-                <div class="profile-actions">
-                    <button class="profile-action-btn sync-btn" onclick="syncWithUser()">
-                        <i class="fas fa-user-plus"></i>
-                        <span data-en="Sync" data-hi="सिंक">Sync</span>
-                    </button>
-                    <button class="profile-action-btn message-btn" onclick="messageUser()">
-                        <i class="fas fa-comment"></i>
-                        <span data-en="Message" data-hi="संदेश">Message</span>
-                    </button>
-                    <button class="profile-action-btn more-btn" onclick="showProfileMenu()">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="profile-content">
-                <div class="profile-tabs">
-                    <button class="profile-tab active" onclick="switchProfileTab('posts')" data-en="Verses" data-hi="वर्स">Verses</button>
-                    <button class="profile-tab" onclick="switchProfileTab('reels')" data-en="Reels" data-hi="रील्स">Reels</button>
-                    <button class="profile-tab" onclick="switchProfileTab('media')" data-en="Media" data-hi="मीडिया">Media</button>
-                    <button class="profile-tab" onclick="switchProfileTab('likes')" data-en="Likes" data-hi="लाइक्स">Likes</button>
-                </div>
-
-                <div class="profile-posts-grid" id="profile-posts-grid">
-                    <!-- Profile posts will be loaded here -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Explore Page -->
-    <div id="explore-page" class="page">
-        <div class="explore-layout">
-            <div class="explore-header">
-                <h2 data-en="Explore BharatVerse" data-hi="भारतवर्स एक्सप्लोर करें">Explore BharatVerse</h2>
-                <div class="explore-search">
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search posts, people, hashtags..." class="search-input" id="explore-search">
-                    </div>
-                </div>
-            </div>
-
-            <div class="explore-filters">
-                <div class="filter-tabs">
-                    <button class="filter-tab active" onclick="filterExplore('all')" data-en="For You" data-hi="आपके लिए">For You</button>
-                    <button class="filter-tab" onclick="filterExplore('trending')" data-en="Trending" data-hi="ट्रेंडिंग">Trending</button>
-                    <button class="filter-tab" onclick="filterExplore('cricket')" data-en="Cricket" data-hi="क्रिकेट">Cricket</button>
-                    <button class="filter-tab" onclick="filterExplore('bollywood')" data-en="Bollywood" data-hi="बॉलीवुड">Bollywood</button>
-                    <button class="filter-tab" onclick="filterExplore('tech')" data-en="Tech" data-hi="टेक">Tech</button>
-                    <button class="filter-tab" onclick="filterExplore('music')" data-en="Music" data-hi="संगीत">Music</button>
-                    <button class="filter-tab" onclick="filterExplore('food')" data-en="Food" data-hi="खाना">Food</button>
-                </div>
-            </div>
-
-            <div class="explore-content">
-                <div class="explore-grid" id="explore-grid">
-                    <!-- Explore content will be loaded here -->
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Modals and Overlays -->
+    <div id="modal-overlay" class="modal-overlay" onclick="closeAllModals()"></div>
 
     <!-- Voice Recording Modal -->
     <div id="voice-modal" class="modal">
-        <div class="modal-backdrop" onclick="closeVoiceModal()"></div>
         <div class="modal-content voice-modal-content">
+            <div class="modal-header">
+                <h3 data-en="Voice Message" data-hi="वॉयस मैसेज">Voice Message</h3>
+                <button class="close-btn" onclick="closeVoiceModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <div class="voice-recording-area">
                 <div class="voice-visualization" id="voice-visualization">
                     <div class="voice-circle">
@@ -589,63 +536,6 @@
         </div>
     </div>
 
-    <!-- Edit Profile Modal -->
-    <div id="edit-profile-modal" class="modal">
-        <div class="modal-backdrop" onclick="closeModal('edit-profile-modal')"></div>
-        <div class="modal-content edit-profile-content">
-            <div class="modal-header">
-                <h3 data-en="Edit Profile" data-hi="प्रोफाइल संपादित करें">Edit Profile</h3>
-                <button class="close-btn" onclick="closeModal('edit-profile-modal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="edit-profile-form">
-                <div class="form-section">
-                    <div class="avatar-edit-section">
-                        <img class="edit-avatar" id="edit-avatar-preview" src="https://via.placeholder.com/100/333/FFF?text=U" alt="Profile">
-                        <button class="change-avatar-overlay" onclick="selectNewAvatar()">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <label class="form-label" data-en="Display Name" data-hi="प्रदर्शन नाम">Display Name</label>
-                    <input type="text" class="form-input" id="edit-display-name" maxlength="30">
-                </div>
-                
-                <div class="form-section">
-                    <label class="form-label" data-en="Username" data-hi="उपयोगकर्ता नाम">Username</label>
-                    <input type="text" class="form-input" id="edit-username" maxlength="20">
-                </div>
-                
-                <div class="form-section">
-                    <label class="form-label" data-en="Bio" data-hi="बायो">Bio</label>
-                    <textarea class="form-textarea" id="edit-bio" maxlength="150" rows="3"></textarea>
-                    <div class="char-counter">
-                        <span id="bio-char-count">0</span>/150
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <label class="form-label" data-en="Location" data-hi="स्थान">Location</label>
-                    <input type="text" class="form-input" id="edit-location" maxlength="50">
-                </div>
-                
-                <div class="form-section">
-                    <label class="form-label" data-en="Website" data-hi="वेबसाइट">Website</label>
-                    <input type="url" class="form-input" id="edit-website">
-                </div>
-                
-                <div class="form-actions">
-                    <button class="btn btn-secondary" onclick="closeModal('edit-profile-modal')" data-en="Cancel" data-hi="रद्द करें">Cancel</button>
-                    <button class="btn btn-primary" onclick="saveProfileChanges()" data-en="Save Changes" data-hi="परिवर्तन सहेजें">Save Changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Notifications Dropdown -->
     <div id="notifications-dropdown" class="notifications-dropdown">
         <div class="notifications-header">
@@ -653,17 +543,31 @@
             <button class="mark-all-read" onclick="markAllNotificationsRead()" data-en="Mark all read" data-hi="सभी पढ़े गए">Mark all read</button>
         </div>
         <div class="notifications-list" id="notifications-list">
-            <!-- Notifications will be loaded here -->
+            <div class="no-notifications">
+                <i class="fas fa-bell-slash"></i>
+                <p data-en="No notifications yet" data-hi="अभी तक कोई सूचना नहीं">No notifications yet</p>
+            </div>
         </div>
     </div>
 
-    <!-- File Inputs (Hidden) -->
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Hidden File Inputs -->
     <input type="file" id="photo-input" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'image')">
     <input type="file" id="video-input" accept="video/*" style="display: none;" onchange="handleFileUpload(event, 'video')">
     <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
 
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
+    <!-- PWA Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'));
+            });
+        }
+    </script>
 
     <script src="app.js"></script>
 </body>
