@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatVerse - Make Your Verse Go Viral</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <div class="logo-section">
+                <div class="logo">
+                    <div class="logo-circle">
+                        <span class="logo-text">V</span>
+                    </div>
+                </div>
+                <h1 class="app-title">BharatVerse</h1>
+                <p class="tagline">"Make Your Verse Go Viral"</p>
+            </div>
+            
+            <div class="auth-forms">
+                <div class="form-container">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="showLoginForm()">Login</button>
+                        <button class="tab-btn" onclick="showSignupForm()">Sign Up</button>
+                    </div>
+                    
+                    <form id="login-form" class="auth-form active" onsubmit="login(event)">
+                        <input type="text" placeholder="Username or Email" class="form-control" required>
+                        <input type="password" placeholder="Password" class="form-control" required>
+                        <button type="submit" class="btn btn-primary">Login to BharatVerse</button>
+                    </form>
+                    
+                    <form id="signup-form" class="auth-form" onsubmit="signup(event)" style="display:none;">
+                        <input type="text" placeholder="Username" class="form-control" required>
+                        <input type="email" placeholder="Email" class="form-control" required>
+                        <input type="password" placeholder="Password" class="form-control" required>
+                        <button type="submit" class="btn btn-primary">Join BharatVerse</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Feed Page -->
+    <div id="home-page" class="page">
+        <nav class="navbar" id="main-navbar" style="display: none;">
+            <div class="nav-brand">
+                <div class="logo-small">V</div>
+                <span>BharatVerse</span>
+            </div>
+            <div class="nav-center">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search BharatVerse...">
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" onclick="showPage('home')"><i class="fas fa-home"></i></button>
+                <button class="nav-btn" onclick="showPage('explore')"><i class="fas fa-compass"></i></button>
+                <button class="nav-btn" onclick="showPage('chat')"><i class="fas fa-comment"></i></button>
+                <button class="nav-btn" onclick="showPage('profile')"><i class="fas fa-user"></i></button>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="feed-container">
+                <div class="create-post">
+                    <div class="create-post-header">
+                        <div class="user-avatar" style="background-image: url('https://via.placeholder.com/40/333/FFFFFF?text=You')"></div>
+                        <input type="text" placeholder="What's on your verse today?" onclick="showCreateModal()">
+                    </div>
+                    <div class="create-post-actions">
+                        <button class="action-btn"><i class="fas fa-image"></i> Photo</button>
+                        <button class="action-btn"><i class="fas fa-video"></i> Video</button>
+                        <button class="action-btn"><i class="fas fa-microphone"></i> Voice</button>
+                        <button class="action-btn"><i class="fas fa-map-marker-alt"></i> Location</button>
+                    </div>
+                </div>
+
+                <div id="posts-container">
+                    <!-- Posts will be loaded here -->
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="trending-section">
+                    <h3>Trending in India</h3>
+                    <div class="trending-item">
+                        <span class="trending-tag">#IPL2025</span>
+                        <span class="trending-count">125K Verses</span>
+                    </div>
+                    <div class="trending-item">
+                        <span class="trending-tag">#BharatVerse</span>
+                        <span class="trending-count">89K Verses</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Page -->
+    <div id="chat-page" class="page">
+        <div class="chat-container">
+            <div class="chat-sidebar">
+                <h3>Messages</h3>
+                <div class="chat-list" id="chat-list">
+                    <!-- Chat list will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="chat-main">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message received">
+                        <div class="message-content">Welcome to BharatVerse Chat! 💬</div>
+                        <div class="message-time">Now</div>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <input type="text" placeholder="Type a message..." id="message-input" onkeypress="sendMessage(event)">
+                    <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile-page" class="page">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="profile-avatar" style="background-image: url('https://via.placeholder.com/120/333/FFFFFF?text=You')"></div>
+                    <div class="profile-details">
+                        <h2 class="profile-name">Your Name</h2>
+                        <p class="profile-username">@your_username</p>
+                        <p class="profile-bio">Cricket lover 🏏 | Coding addict | #TeamIndia</p>
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <div class="stat-number">247</div>
+                                <div class="stat-label">Verses</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">1.2K</div>
+                                <div class="stat-label">Synced</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">890</div>
+                                <div class="stat-label">Syncing</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explore Page -->
+    <div id="explore-page" class="page">
+        <div class="explore-container">
+            <h2>Explore BharatVerse</h2>
+            <div class="explore-grid" id="explore-grid">
+                <!-- Explore content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
